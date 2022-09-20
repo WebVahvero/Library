@@ -39,6 +39,11 @@ closeForm.addEventListener('click', () => {
 // Displays Books
 function refreshBookSelf() {
     let output = '';
+
+    if(myLibrary.length == 0) {
+        output = `<img class="catImg" src="./cat.jpg" alt="Cat" />`
+    }
+
     for(bookIndex in myLibrary) {
         output +=
         `
