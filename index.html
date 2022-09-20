@@ -14,7 +14,7 @@
     <section id="form-wrapper">
         <form id="form">
             <div class="form-header">
-                <i id="closeForm" class="fa-solid fa-xmark"></i>
+                <button id="closeForm"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <label for="title">Title</label>
             <input id="title" name="title" type="text">
@@ -30,7 +30,17 @@
             <button id="submit" type="submit">Submit</button>
         </form>
     </section>
-    <button id="showForm">Add Book</button>
-    <div id="bookSelf"></div>
+    <header>
+        <h1>Library</h1>
+        <div class="action-btns">
+            <button id="showForm">Add Book</button>
+        </div>
+    </header>
+    <main>
+        <div id="bookSelf"></div>
+    </main>
+    <footer>
+        <a href="https://github.com/WebVahvero" target="_blank"><i class="fa-brands fa-github"></i> Valtteri Kurunsaari</a>
+    </footer>
 </body>
 </html>

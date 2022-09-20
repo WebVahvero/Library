@@ -43,16 +43,20 @@ function refreshBookSelf() {
         output +=
         `
         <div id="book-${bookIndex}" class="book-card">
-            <h3>${myLibrary[bookIndex].title}</h3>
+            <div class="book-title-wrapper">
+                <h3>${myLibrary[bookIndex].title}</h3>
+            </div>
             <div class="book-desc">
                 <p>Author: ${myLibrary[bookIndex].author}</p>
                 <p>Pages: ${myLibrary[bookIndex].pages}</p>
-                <p>Read: ${myLibrary[bookIndex].read}</p>
+            </div>
+            <div class="read-status ${myLibrary[bookIndex].read ? 'read' : 'not-read'}">
+                <strong>${myLibrary[bookIndex].read ? 'You have read the book <i class="fa-solid fa-check"></i>' : 'You haven&#39;t read book <i class="fa-solid fa-xmark"></i>'}</strong>
             </div>
             <div class="options">
-                <i id="removeBook" data-id="${bookIndex}" class="fa-solid fa-xmark"></i>
-                <i id="toggleRead" data-id="${bookIndex}" class="fa-brands fa-readme"></i>
-                <i id="updateBook" data-id="${bookIndex}" class="fa-solid fa-pen"></i>
+                <button id="removeBook" data-id="${bookIndex}"><i class="fa-solid fa-xmark"></i></button>
+                <button id="toggleRead" data-id="${bookIndex}"><i class="fa-brands fa-readme"></i></button>
+                <button id="updateBook" data-id="${bookIndex}"><i class="fa-solid fa-pen"></i></button>
             </div>
         </div>
         `;
