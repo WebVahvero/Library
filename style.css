@@ -1,0 +1,43 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --form-bg: rgb(28, 28, 84);
+    --text-color: white;
+    --text-hover-color: red;
+}
+
+html {
+    font-size: 18px;
+}
+
+#form-wrapper {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.704);
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+#form {
+    background-color: var(--form-bg);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 50px;
+    border-radius: 10px;
+}
+
+#closeForm, #removeBook, #toggleRead, #updateBook, button {
+    cursor: pointer;
+}
+
+#closeForm:hover,#removeBook:hover, #toggleRead:hover, #updateBook:hover {
+    color: var(--text-hover-color);
+}
+

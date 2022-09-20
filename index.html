@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library</title>
+    <link rel="icon" type="image/x-icon" href="./book-solid.svg">
+    <link rel="stylesheet" href="./style.css">
+    <script defer src="./index.js"></script>
+    <script src="https://kit.fontawesome.com/b624cfda5b.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <section id="form-wrapper">
+        <form id="form">
+            <div class="form-header">
+                <i id="closeForm" class="fa-solid fa-xmark"></i>
+            </div>
+            <label for="title">Title</label>
+            <input id="title" name="title" type="text">
+            <label for="author">Author</label>
+            <input id="author" name="author" type="text">
+            <label for="pages">Pages</label>
+            <input id="pages" name="pages" type="number">
+            <label for="read">Have you read it?</label>
+            <select name="read" id="read">
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+            <button id="submit" type="submit">Submit</button>
+        </form>
+    </section>
+    <button id="showForm">Add Book</button>
+    <div id="bookSelf"></div>
+</body>
+</html>
