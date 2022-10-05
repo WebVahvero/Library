@@ -120,8 +120,29 @@ body {
 
 .form-header {
     display: flex;
-    justify-content: flex-end;
-    margin: -40px -40px 40px 0;
+    flex-direction: column;
+    margin-bottom: 20px;
+    margin-top: -40px;
+    text-align: center;
+}
+
+#closeForm {
+    width: 30%;
+    height: auto;
+    text-align: center;
+    align-self: flex-end;
+}
+
+.error, .fine {
+    margin: 30px 0 -10px 0;
+}
+
+.error {
+    color: var(--not-read-text-color);
+}
+
+.fine {
+    color: var(--read-text-color);
 }
 
 label {

@@ -1,75 +1,164 @@
-const bookSelf = document.querySelector('#bookSelf');
-let myLibrary = [];
-const showForm = document.querySelector('#showForm');
+const showFormBtn = document.querySelector('#showForm');
 const form = document.querySelector('#form');
 const closeForm = document.querySelector('#closeForm');
-const formWrap = document.querySelector('#form-wrapper');
-const titleInput = document.querySelector('#title');
-const authorInput = document.querySelector('#author');
-const pagesInput = document.querySelector('#pages');
-const readSelection = document.querySelector('#read');
 const submitBtn = document.querySelector('#submit');
 
-// Book Constructor
-function Book(title, author, pages, read) {
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.read = read;
+class Book {
+    constructor(title, author, pages, read) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.read = read;
+    }
 }
 
-showForm.addEventListener('click', () => {
-    formWrap.style.display = 'flex';
+class UI {
+    static displayBooks() {
+        const StoredBooks = [
+            {
+                title: 'The Hobbit',
+                author: 'J.R.R. Tolkien',
+                pages: 295,
+                read: true
+            },
+            {
+                title: 'Nineteen Eighty-Four',
+                author: 'George Orwell',
+                pages: 254,
+                read: false
+            },
+        ];
+
+        const books = StoredBooks;
+
+        books.forEach(book => UI.addBookToList(book))
+    };
+
+    static addBookToList(book) {
+        const bookSelf = document.querySelector('#bookSelf');
+
+        bookSelf.innerHTML += `
+        <div id="book-${book.title}" class="book-card">
+            <div class="book-title-wrapper">
+                <h3>${book.title}</h3>
+            </div>
+            <div class="book-desc">
+                <p>Author: ${book.author}</p>
+                <p>Pages: ${book.pages}</p>
+            </div>
+            <div class="read-status ${book.read ? 'read' : 'not-read'}">
+                <strong>${book.read ? 'You have read the book <i class="fa-solid fa-check"></i>' : 'You haven&#39;t read book <i class="fa-solid fa-xmark"></i>'}</strong>
+            </div>
+            <div class="options">
+                <button class="delete" id="removeBook" data-id="${book.title}"><i class="fa-solid fa-xmark"></i></button>
+                <button class="status" id="toggleRead" data-id="${book.title}"><i class="fa-brands fa-readme"></i></button>
+                <button class="update" id="updateBook" data-id="${book.title}"><i class="fa-solid fa-pen"></i></button>
+            </div>
+        </div>
+        `;
+    };
+
+    static bookOptions(el) {
+
+        if(el.classList.contains('delete')) {
+            el.parentElement.parentElement.remove();
+        }
+        else if(el.classList.contains('status')) {
+            console.log(el.parentElement.parentElement.previousSibling);
+        }
+        else if(el.classList.contains('update')) {
+            console.log(el.parentElement.parentElement.previousSibling);
+        }
+    };
+
+    static clearFields() {
+        document.querySelector('#title').value = '';
+        document.querySelector('#author').value = '';
+        document.querySelector('#pages').value = '';
+        document.querySelector('#read').value = '';
+    };
+
+    static showForm() {
+        document.querySelector('#form-wrapper').style.display = 'flex';
+    };
+
+    static hideForm() {
+        document.querySelector('#form-wrapper').style.display = 'none';
+    };
+
+    static showAlert(message, classname) {
+        const div = document.createElement('div');
+        div.className = `${classname}`;
+        div.appendChild(document.createTextNode(message));
+        const container = document.querySelector('.form-header')
+        container.appendChild(div);
+
+        setTimeout(() => {
+            document.querySelector('.error').remove();
+        }, 1800);
+    }
+}
+
+showFormBtn.addEventListener('click', () => {
+    UI.showForm()
 });
 
-form.addEventListener('click', (event) => {
+submitBtn.addEventListener('click', (event) => {
+
     event.preventDefault();
+
+    const titleInput = document.querySelector('#title').value;
+    const authorInput = document.querySelector('#author').value;
+    const pagesInput = document.querySelector('#pages').value;
+    const readSelection = document.querySelector('#read').value;
+
+    if(titleInput === '' || authorInput === '' || pagesInput === '') {
+        UI.showAlert('Please fill all fields', 'error');
+    }
+    else {
+        const book = new Book(titleInput, authorInput, pagesInput, readSelection);
+
+        UI.addBookToList(book);
+
+        UI.clearFields();
+
+        UI.hideForm();
+    }
 });
 
-submitBtn.addEventListener('click', () => {
-    addBookToLibrary(new Book(titleInput.value, authorInput.value, pagesInput.value, readSelection.value));
-    refreshBookSelf()
-    formWrap.style.display = 'none';
-});
+class Store {
+
+    static getBooks() {
+        let books;
+
+        if(localStorage.getItem('books') === null) {
+            books = [];
+        }
+        else {
+            books = JSON.parse(localStorage.getItem('books'));
+        }
+    };
+
+    static addBooks() {
+
+    };
+
+    static removeBooks() {
+
+    };
+}
 
 closeForm.addEventListener('click', () => {
     formWrap.style.display = 'none';
 });
 
-// Displays Books
-function refreshBookSelf() {
-    let output = '';
+document.querySelector('#bookSelf').addEventListener('click', e => {
+    UI.bookOptions(e.target);
+});
 
-    if(myLibrary.length == 0) {
-        output = `<img class="catImg" src="./cat.jpg" alt="Cat" />`
-    }
+document.addEventListener('DOMContentLoaded', UI.displayBooks);
 
-    for(bookIndex in myLibrary) {
-        output +=
-        `
-        <div id="book-${bookIndex}" class="book-card">
-            <div class="book-title-wrapper">
-                <h3>${myLibrary[bookIndex].title}</h3>
-            </div>
-            <div class="book-desc">
-                <p>Author: ${myLibrary[bookIndex].author}</p>
-                <p>Pages: ${myLibrary[bookIndex].pages}</p>
-            </div>
-            <div class="read-status ${myLibrary[bookIndex].read ? 'read' : 'not-read'}">
-                <strong>${myLibrary[bookIndex].read ? 'You have read the book <i class="fa-solid fa-check"></i>' : 'You haven&#39;t read book <i class="fa-solid fa-xmark"></i>'}</strong>
-            </div>
-            <div class="options">
-                <button id="removeBook" data-id="${bookIndex}"><i class="fa-solid fa-xmark"></i></button>
-                <button id="toggleRead" data-id="${bookIndex}"><i class="fa-brands fa-readme"></i></button>
-                <button id="updateBook" data-id="${bookIndex}"><i class="fa-solid fa-pen"></i></button>
-            </div>
-        </div>
-        `;
-    }
-    bookSelf.innerHTML = output;
-    listenOptionButtons()
-};
-
+/*
 // Listen events and handle them
 function listenOptionButtons() {
     const removeBookBtns = document.querySelectorAll('#removeBook');
@@ -97,6 +186,7 @@ function listenOptionButtons() {
 
     updateBookBtns.forEach((updateBookBtn) => {
         updateBookBtn.addEventListener('click', (event) => {
+            console.log(event)
             formWrap.style.display = 'flex';
             titleInput.value = myLibrary[event.target.getAttribute('data-id')].title;
             authorInput.value = myLibrary[event.target.getAttribute('data-id')].author;
@@ -110,21 +200,4 @@ function listenOptionButtons() {
     });
 };
 
-// Load preset
-window.addEventListener('load', () => {
-    const theHobbit = new Book('The Hobbit', 'J.R.R. Tolkien', 295, true);
-    const NineteenEightyFour = new Book ('Nineteen Eighty-Four', 'George Orwell', 254, false);
-    const jsAndJquery = new Book ('JavaScript & JQuery: Interactive Front-End Web Development', 'Jon Duckett', 640, false);
-    const JavaScriptTheGoodParts = new Book ('JavaScript: The Good Parts', 'Douglas Crockford', 172, false);
-    const eloquentJs = new Book ('Eloquent JavaScript: A Modern Introduction to Programming', 'Marjin Haverbeke', 472, false);
-    addBookToLibrary(theHobbit);
-    addBookToLibrary(NineteenEightyFour);
-    addBookToLibrary(jsAndJquery);
-    addBookToLibrary(JavaScriptTheGoodParts);
-    addBookToLibrary(eloquentJs);
-    refreshBookSelf();
-});
-
-function addBookToLibrary(book) {
-    myLibrary.push(book);
-};
+*/
