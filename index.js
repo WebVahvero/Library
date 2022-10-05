@@ -3,33 +3,21 @@ const form = document.querySelector('#form');
 const closeForm = document.querySelector('#closeForm');
 const submitBtn = document.querySelector('#submit');
 
+// Classes
 class Book {
-    constructor(title, author, pages, read) {
+    constructor(title, author, pages, isbn, read) {
         this.title = title;
         this.author = author;
         this.pages = pages;
+        this.isbn = isbn;
         this.read = read;
     }
 }
 
 class UI {
     static displayBooks() {
-        const StoredBooks = [
-            {
-                title: 'The Hobbit',
-                author: 'J.R.R. Tolkien',
-                pages: 295,
-                read: true
-            },
-            {
-                title: 'Nineteen Eighty-Four',
-                author: 'George Orwell',
-                pages: 254,
-                read: false
-            },
-        ];
 
-        const books = StoredBooks;
+        const books = Store.getBooks();
 
         books.forEach(book => UI.addBookToList(book))
     };
@@ -46,6 +34,7 @@ class UI {
                 <p>Author: ${book.author}</p>
                 <p>Pages: ${book.pages}</p>
             </div>
+            <p>ISBN: ${book.isbn}</p>
             <div class="read-status ${book.read ? 'read' : 'not-read'}">
                 <strong>${book.read ? 'You have read the book <i class="fa-solid fa-check"></i>' : 'You haven&#39;t read book <i class="fa-solid fa-xmark"></i>'}</strong>
             </div>
@@ -58,16 +47,9 @@ class UI {
         `;
     };
 
-    static bookOptions(el) {
-
+    static deleteBook(el) {
         if(el.classList.contains('delete')) {
             el.parentElement.parentElement.remove();
-        }
-        else if(el.classList.contains('status')) {
-            console.log(el.parentElement.parentElement.previousSibling);
-        }
-        else if(el.classList.contains('update')) {
-            console.log(el.parentElement.parentElement.previousSibling);
         }
     };
 
@@ -97,8 +79,43 @@ class UI {
             document.querySelector('.error').remove();
         }, 1800);
     }
-}
+};
 
+class Store {
+
+    static getBooks() {
+        let books;
+        if(localStorage.getItem('books') === null) {
+            books = [];
+        }
+        else {
+            books = JSON.parse(localStorage.getItem('books'));
+        }
+        return books;
+    };
+
+    static addBooks(book) {
+        const books = Store.getBooks();
+        books.push(book);
+        localStorage.setItem('books', JSON.stringify(books));
+    };
+
+    static removeBooks(isbn) {
+        const books = Store.getBooks();
+
+        books.forEach((book, index) => {
+            console.log(book.isbn);
+            console.log(isbn);
+            if(`ISBN: ${book.isbn}` === isbn) {
+                books.splice(index, 1)
+            }
+        });
+
+        localStorage.setItem('books', JSON.stringify(books));
+    };
+};
+
+// EventListeners
 showFormBtn.addEventListener('click', () => {
     UI.showForm()
 });
@@ -110,15 +127,18 @@ submitBtn.addEventListener('click', (event) => {
     const titleInput = document.querySelector('#title').value;
     const authorInput = document.querySelector('#author').value;
     const pagesInput = document.querySelector('#pages').value;
+    const isbnInput = document.querySelector('#isbn').value;
     const readSelection = document.querySelector('#read').value;
 
     if(titleInput === '' || authorInput === '' || pagesInput === '') {
         UI.showAlert('Please fill all fields', 'error');
     }
     else {
-        const book = new Book(titleInput, authorInput, pagesInput, readSelection);
+        const book = new Book(titleInput, authorInput, pagesInput, isbnInput, readSelection);
 
         UI.addBookToList(book);
+
+        Store.addBooks(book);
 
         UI.clearFields();
 
@@ -126,34 +146,14 @@ submitBtn.addEventListener('click', (event) => {
     }
 });
 
-class Store {
-
-    static getBooks() {
-        let books;
-
-        if(localStorage.getItem('books') === null) {
-            books = [];
-        }
-        else {
-            books = JSON.parse(localStorage.getItem('books'));
-        }
-    };
-
-    static addBooks() {
-
-    };
-
-    static removeBooks() {
-
-    };
-}
-
 closeForm.addEventListener('click', () => {
     formWrap.style.display = 'none';
 });
 
 document.querySelector('#bookSelf').addEventListener('click', e => {
-    UI.bookOptions(e.target);
+    UI.deleteBook(e.target);
+    Store.removeBooks(e.target.parentElement.previousElementSibling.previousElementSibling.textContent);
+    //console.log(e.target.parentElement.previousElementSibling.previousElementSibling.textContent);
 });
 
 document.addEventListener('DOMContentLoaded', UI.displayBooks);
